@@ -1,1 +1,5 @@
 rootProject.name = 'jenkins-ci-cd'
+include 'module-api'
+include 'module-domain'
+include 'module-common'
+

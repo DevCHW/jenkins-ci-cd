@@ -1,0 +1,46 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: jenkins-api
+
+  config:
+    activate:
+      on-profile: local
+
+  output:
+    ansi:
+      enabled: always
+
+  datasource:
+    url: jdbc:h2:mem:~/justShopApplication
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+
+    # (2.5~) Hibernate 초기화 이후 data.sql 실행, 테스트 데이터 넣을 때 넣는 옵션
+    defer-datasource-initialization: true
+
+  h2:
+    console:
+      enabled: true
+      settings:
+        web-allow-others: true
+
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: refresh, health, beans, busrefresh, info, metrics, prometheus
+
+
