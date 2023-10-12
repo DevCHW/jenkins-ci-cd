@@ -24,6 +24,7 @@ public class RestApiController {
 
     @GetMapping("/health_check")
     public ApiResponse<String> healthCheck() {
+        log.info("health_check 호출");
         return ApiResponse.ok("ok");
     }
 

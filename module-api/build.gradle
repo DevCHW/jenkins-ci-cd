@@ -1,0 +1,75 @@
+plugins {
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
+}
+
+configurations {
+    asciidoctorExt
+}
+
+dependencies {
+    // web
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // rest docs
+    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'org.springframework.security:spring-security-test'
+
+    // module
+    implementation project(':module-domain')
+    implementation project(':module-common')
+}
+
+ext { // 전역 변수
+    set('springCloudVersion', "2021.0.8")
+    snippetsDir = file('build/generated-snippets')
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+test {
+    outputs.dir snippetsDir
+}
+
+asciidoctor { // asciidoctor 작업 구성
+    configurations 'asciidoctorExt'
+    inputs.dir snippetsDir
+
+    // 다른 Task 에 의존한다는 것을 알리는 것이다.
+    // test Task 에 의존함을 알린다.
+    // asciidoctor task 를 실행할 때, test task 를 먼저 실행한다.
+    dependsOn test
+
+    sources { // index.adoc만 html파일로 만들도록 설정
+        include("**/index.adoc")
+    }
+
+    doFirst {
+        delete "src/main/resources/static/docs/jenkins-index.html"
+    }
+
+    baseDirFollowsSourceFile()	// 다른 adoc 파일을 include 할 때 경로를 baseDir로 맞춘다.
+    outputDir file('build/docs/asciidoc')
+}
+
+task copyAsciidoc(type: Copy) {
+    from "build/docs/asciidoc/"
+    into "src/main/resources/static/docs"
+    include "index.html"
+    destinationDir file("src/main/resources/static/docs/")
+    rename "index.html", "jenkins-index.html"
+    dependsOn asciidoctor
+}
+
+build {
+    dependsOn copyAsciidoc
+}
+
+
