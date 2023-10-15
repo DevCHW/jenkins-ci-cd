@@ -91,10 +91,7 @@ class JenkinsServiceTest {
         assertThat(result).hasSize(3)
                 .extracting("id", "name", "email", "nickname")
                 .containsExactlyInAnyOrder(
-                        // 실패하는 테스트
-                        tuple(members.get(1).getId(), members.get(0).getName(), members.get(0).getEmail(), members.get(0).getNickname()),
-                        // 성공하는 테스트는 주석처리
-//                        tuple(members.get(0).getId(), members.get(0).getName(), members.get(0).getEmail(), members.get(0).getNickname()),
+                        tuple(members.get(0).getId(), members.get(0).getName(), members.get(0).getEmail(), members.get(0).getNickname()),
                         tuple(members.get(1).getId(), members.get(1).getName(), members.get(1).getEmail(), members.get(1).getNickname()),
                         tuple(members.get(2).getId(), members.get(2).getName(), members.get(2).getEmail(), members.get(2).getNickname())
                 );
